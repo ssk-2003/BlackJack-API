@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack Royal - Premium Casino</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- ── AUTH SECTION ── -->
+        <div id="auth-panel" class="auth-card modal-container">
+            <h1 class="brand-title">BLACKJACK ROYAL</h1>
+            <p class="brand-subtitle">Step into the High Rollers Club</p>
+            
+            <div class="tab-buttons">
+                <button id="tab-login" class="tab-btn active">Login</button>
+                <button id="tab-register" class="tab-btn">Register</button>
+            </div>
+            
+            <form id="auth-form" class="form-container">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required placeholder="Enter username">
+                </div>
+                <div id="email-group" class="input-group hidden">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter email">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="btn primary-btn">Login</button>
+            </form>
+            <div id="auth-error" class="error-msg"></div>
+        </div>
+
+        <!-- ── MAIN GAME PANEL ── -->
+        <div id="game-panel" class="game-container hidden">
+            <!-- Header bar -->
+            <header class="game-header">
+                <div class="logo-box">
+                    <span class="royal-crown">👑</span>
+                    <h2 class="header-title">BLACKJACK ROYAL</h2>
+                </div>
+                <div class="header-user-info">
+                    <span class="user-name-label">Player: <strong id="header-username">Guest</strong></span>
+                    <span class="balance-badge">💰 <span id="chips-counter">0</span> Chips</span>
+                    <button id="logout-btn" class="btn outline-btn small-btn">Leave Table</button>
+                </div>
+            </header>
+
+            <main class="game-board">
+                <!-- Left column: Casino Felt Table -->
+                <section class="table-area">
+                    <div class="felt-table">
+                        <div class="felt-border"></div>
+                        
+                        <!-- Table labels / Gold branding -->
+                        <div class="felt-branding">
+                            <h3>BLACKJACK</h3>
+                            <p>Dealer must draw to 16 and stand on all 17s</p>
+                            <p class="payout-rate">PAYS 3 TO 2 • INSURANCE PAYS 2 TO 1</p>
+                        </div>
+                        
+                        <!-- Dealer Section -->
+                        <div class="dealer-area hand-container">
+                            <div class="section-label">DEALER <span id="dealer-score-badge" class="score-badge hidden">0</span></div>
+                            <div id="dealer-cards" class="cards-slot">
+                                <!-- Cards injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Player Section (Supports splits, dynamically rendered) -->
+                        <div class="player-area">
+                            <div id="player-hands-container" class="hands-row">
+                                <!-- Hands injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Game Outcome overlay -->
+                        <div id="outcome-overlay" class="outcome-overlay hidden">
+                            <h2 id="outcome-text">PLAYER WINS!</h2>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right column: Sidebar Controls, Bets, History, Strategy -->
+                <aside class="dashboard-sidebar">
+                    <!-- Statistics Panel -->
+                    <div class="stats-card dashboard-box">
+                        <h4 class="box-title">Session Stats</h4>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Total</span>
+                                <span id="stat-total">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Win Rate</span>
+                                <span id="stat-rate">0%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">W / L / P</span>
+                                <span id="stat-wlp">0 / 0 / 0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Net Profit</span>
+                                <span id="stat-net" class="profit-neutral">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Betting & Action Center -->
+                    <div class="controls-card dashboard-box">
+                        <h4 class="box-title">Wager & Controls</h4>
+                        
+                        <!-- Bet placement controls -->
+                        <div id="betting-controls" class="bet-controls">
+                            <div class="chip-selector">
+                                <button class="chip-btn" data-value="10">10</button>
+                                <button class="chip-btn" data-value="50">50</button>
+                                <button class="chip-btn" data-value="100">100</button>
+                                <button class="chip-btn" data-value="500">500</button>
+                            </div>
+                            <div class="bet-input-row">
+                                <label for="bet-amount">Current Bet: </label>
+                                <input type="number" id="bet-amount" value="50" min="10" max="1000">
+                            </div>
+                            <button id="deal-btn" class="btn golden-btn large-btn">DEAL HAND</button>
+                        </div>
+
+                        <!-- In-game choices -->
+                        <div id="action-controls" class="action-controls hidden">
+                            <button id="hit-btn" class="btn primary-btn">HIT</button>
+                            <button id="stand-btn" class="btn secondary-btn">STAND</button>
+                            <button id="double-btn" class="btn accent-btn">DOUBLE</button>
+                            <button id="split-btn" class="btn split-btn hidden">SPLIT</button>
+                            <button id="insurance-btn" class="btn insurance-btn hidden">INSURE</button>
+                        </div>
+                    </div>
+
+                    <!-- Strategy Book -->
+                    <div class="strategy-card dashboard-box">
+                        <h4 class="box-title">Strategy Tips</h4>
+                        <ul class="strat-list">
+                            <li>🎯 <strong>Double down</strong> on 10 or 11.</li>
+                            <li>🔄 <strong>Always split</strong> Aces and 8s.</li>
+                            <li>❌ <strong>Never split</strong> 10s or face cards.</li>
+                            <li>⚠️ <strong>Stand</strong> on 12-16 if dealer shows 2-6.</li>
+                            <li>🛡️ <strong>Avoid insurance</strong>; it is a side bet that favors the house.</li>
+                        </ul>
+                    </div>
+                </aside>
+            </main>
+        </div>
+    </div>
+    
+    <script src="js/api.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
