@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: blackjack_db
+    environment:
+      POSTGRES_USER: blackjack
+      POSTGRES_PASSWORD: blackjack_secret
+      POSTGRES_DB: blackjack_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blackjack -d blackjack_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: blackjack_backend
+    environment:
+      - DATABASE_URL=postgresql+psycopg://blackjack:blackjack_secret@db:5432/blackjack_db
+      - SECRET_KEY=CHANGE_THIS_TO_A_LONG_RANDOM_SECRET_KEY_IN_PRODUCTION
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+      - LOG_FORMAT=json
+      - ALLOWED_ORIGINS=http://localhost:8000,http://localhost:3000
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  postgres_data:
